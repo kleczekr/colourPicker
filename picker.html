@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      .wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 55px;
+        padding: 20px;
+        border: black;
+      }
+
+      .wrapper_big {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* height: 400px; */
+        padding: 20px;
+        margin-top: 10px;
+        border: black;
+      }
+      .color-block {
+        font-size: x-large !important;
+      }
+      .selector {
+        margin-left: 30px;
+        cursor: pointer;
+      }
+    </style>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colour Picker</title>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css"
+    />
+  </head>
+  <body>
+    <div>
+      <h3>Colour Picker</h3>
+      <div class="row">
+        <div id="picker" class="five columns"></div>
+        <div class="five columns">
+          <div id="selected"></div>
+          <div id="list-string"></div>
+          <button
+            class="button-primary"
+            onclick="CopyToClipboard('list-string')"
+          >
+            Copy List
+          </button>
+          <button class="button-primary" onclick="resetStuff()">Reset</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      function resetStuff() {
+        displayList = [];
+        d3.select("#selected").html(null);
+        d3.select("#list-string").html(null);
+      }
+      // function to copy the list to clipboard
+      function CopyToClipboard(id) {
+        let r = document.createRange();
+        r.selectNode(document.getElementById(id));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(r);
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges();
+      }
+
+      const colours = [
+        { hex: "#F7F6CF", name: "YELLOW" },
+        { hex: "#B6D8F2", name: "PALE TURQUOISE" },
+        { hex: "#F4CFDF", name: "LINEN" },
+        { hex: "#5784BA", name: "STEEL BLUE" },
+        { hex: "#CCD4BF", name: "PALE LEAF" },
+        { hex: "#E7CBA9", name: "BURLY WOOD" },
+        { hex: "#EEBAB2", name: "ZINNWALDITE" },
+        { hex: "#F5E2E4", name: "VANILLA ICE" },
+        { hex: "#F5BFD2", name: "AZALEA" },
+        { hex: "#A1CDCE", name: "JUNGLE MIST" },
+        { hex: "#E5DB9C", name: "ZOMBIE" },
+        { hex: "#BEB4C5", name: "CHATELLE" },
+        { hex: "#E6A57E", name: "TONYS PINK" },
+        { hex: "#218B82", name: "SEA GREEN" },
+        { hex: "#9AD9DB", name: "LIGHT BLUE" },
+        { hex: "#E5DBD9", name: "GAINSBORO" },
+        { hex: "#98D4BB", name: "DARK SEA GREEN" },
+        { hex: "#EB96AA", name: "PINK" },
+        { hex: "#C6C9D0", name: "GREY BLUE" },
+        { hex: "#C54B6C", name: "INDIAN RED" },
+        { hex: "#E5B3BB", name: "PLUM" },
+        { hex: "#C47482", name: "ROSY BROWN" },
+        { hex: "#D5E4C3", name: "MEDIUM SEA GREEN" },
+        { hex: "#F9968B", name: "SALMON" },
+        { hex: "#F27348", name: "TOMATO" },
+        { hex: "#26474E", name: "DARK SLATE GRAY" },
+        { hex: "#2CCED2", name: "MEDIUM TURQUOISE" },
+        { hex: "#DEC4D6", name: "LIGHT STEEL PINK" },
+        { hex: "#E4CEE0", name: "THISTLE" },
+        { hex: "#A15D98", name: "ROSY BROWN" },
+        { hex: "#F7CE76", name: "RAJAH" },
+        { hex: "#8C7386", name: "MOUNTBATTEN PINK" },
+        { hex: "#9C9359", name: "BARLEY CORN" },
+        { hex: "#E7CBA9", name: "BURLY WOOD" },
+        { hex: "#E8D595", name: "LIGHT KHAKI" },
+        { hex: "#8DA47E", name: "DARK SEA GREEN" },
+        { hex: "#A9C8C0", name: "OPAL" },
+        { hex: "#DBBC8E", name: "BRANDY" },
+        { hex: "#C6AC85", name: "TAN" },
+        { hex: "#E2E5CB", name: "BEIGE" },
+        { hex: "#82B2B8", name: "CADET BLUE" },
+      ];
+
+      let displayList = [];
+
+      d3.select("#picker")
+        .selectAll("p")
+        // .append("svg")
+        // .enter()
+        .data(colours)
+        .enter()
+        .append("p")
+        .html(
+          (d) =>
+            `<span class="selector" id="${d.hex}"><span style="color:${d.hex}" class="color-block">&#9632</span> &rArr; ${d.name} (hex: ${d.hex})</span>`
+        );
+
+      d3.selectAll(".selector").on("click", (d) => {
+        console.log(d.target.id);
+        // push to list only if an element does not exist in it yet
+        displayList.indexOf(d.target.id) === -1
+          ? displayList.push(d.target.id)
+          : console.log("The colour has already been added");
+        console.log(displayList);
+        d3.select("#selected").html(null);
+        for (item of displayList) {
+          d3.select("#selected")
+            .append("span")
+            .attr("class", "color-block")
+            .attr("style", `color:${item}`)
+            .html("&#9632  ");
+        }
+        d3.select("#list-string").text(`["${displayList.join('", "')}"]`);
+      });
+    </script>
+  </body>
+</html>
